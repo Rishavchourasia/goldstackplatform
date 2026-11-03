@@ -1,0 +1,38 @@
+.wrap {
+  overflow-x: auto;
+}
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: var(--font-size-sm);
+}
+.table th {
+  padding: var(--space-2);
+  border-bottom: 1px solid var(--color-border);
+  color: var(--color-text-muted);
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-semibold);
+  letter-spacing: 0.05em;
+  text-align: left;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+.table td {
+  padding: 10px var(--space-2);
+  border-bottom: 1px solid var(--color-border);
+  font-variant-numeric: tabular-nums;
+}
+
+.table tbody tr {
+  animation: rise-in var(--duration-base) var(--ease-out) both;
+  transition: background-color var(--duration-fast) var(--ease-out);
+}
+.table tbody tr:hover {
+  background: var(--color-surface-muted);
+}
+.table tbody tr:last-child td {
+  border-bottom: 0;
+}
+.num {
+  text-align: right !important;
+}

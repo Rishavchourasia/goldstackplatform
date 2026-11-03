@@ -1,0 +1,79 @@
+spring:
+  application:
+    name: order-service
+  config:
+    import:
+      - optional:file:../../.env[.properties]
+      - optional:file:../.env[.properties]
+  datasource:
+    url: jdbc:postgresql://${DB_HOST:localhost}:${DB_PORT:5433}/${DB_NAME:order_db}
+    username: ${DB_USER:goldstack}
+    password: ${DB_PASSWORD}
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    open-in-view: false
+    properties:
+      hibernate:
+        jdbc:
+          time_zone: UTC
+  kafka:
+    bootstrap-servers: ${KAFKA_BOOTSTRAP:localhost:9094}
+    consumer:
+      group-id: order-service          # one consumer GROUP per service: each event is handled once per service
+      auto-offset-reset: earliest
+  jackson:
+    serialization:
+      write-dates-as-timestamps: false
+  data:
+    redis:
+      host: ${REDIS_HOST:localhost}
+      port: ${REDIS_PORT:6380}
+      password: ${REDIS_PASSWORD:}
+      timeout: 2s
+  cloud:
+    openfeign:
+      client:
+        config:
+          default:            # every Feign client: fail fast instead of hanging a user request
+            connect-timeout: 2000
+            read-timeout: 3000
+
+server:
+  port: ${PORT:8084}
+  shutdown: graceful
+  forward-headers-strategy: framework
+  error:
+    include-stacktrace: never
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
+  endpoint:
+    health:
+      probes:
+        enabled: true
+
+springdoc:
+  swagger-ui:
+    path: /swagger-ui.html
+
+goldstack:
+  zone: Asia/Kolkata
+  jwt:
+    secret: ${JWT_SECRET}
+    expiry-minutes: 1440
+  security:
+    public-paths: []
+    public-get-paths: []
+  order:
+    quote-validity-seconds: 300
+    idempotency-ttl-hours: 24
+    wait-ms: 5000
+  clients:
+    price-url: ${PRICE_SERVICE_URL:http://localhost:8083}
+    wallet-url: ${WALLET_SERVICE_URL:http://localhost:8082}
+  dev-endpoints:
+    enabled: ${DEV_ENDPOINTS_ENABLED:true}

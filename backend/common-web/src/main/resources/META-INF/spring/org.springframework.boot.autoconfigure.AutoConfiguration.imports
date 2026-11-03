@@ -1,0 +1,4 @@
+com.goldstack.common.config.CommonWebAutoConfiguration
+com.goldstack.common.outbox.MessagingAutoConfiguration
+com.goldstack.common.redis.RedisSupportAutoConfiguration
+com.goldstack.common.feign.FeignSupportAutoConfiguration

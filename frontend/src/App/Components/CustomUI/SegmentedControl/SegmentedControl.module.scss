@@ -1,0 +1,36 @@
+.root {
+  position: relative;
+  display: inline-grid;
+  grid-template-columns: repeat(var(--count), minmax(0, 1fr));
+  padding: 4px;
+  background: var(--color-surface-muted);
+  border-radius: var(--radius-md);
+  align-self: flex-start;
+  max-width: 100%;
+}
+.thumb {
+  position: absolute;
+  top: 4px;
+  bottom: 4px;
+  left: 4px;
+  width: calc((100% - 8px) / var(--count));
+  background: var(--color-surface-raised);
+  border-radius: 7px;
+  box-shadow: var(--shadow-md);
+  transition: transform var(--duration-slow) var(--ease-spring);
+}
+.option {
+  position: relative;
+  z-index: 1;
+  padding: 6px 18px;
+  border: 0;
+  background: transparent;
+  color: var(--color-text-secondary);
+  font-weight: var(--font-weight-semibold);
+  white-space: nowrap;
+  cursor: pointer;
+  transition: color var(--duration-fast) var(--ease-out);
+}
+.active {
+  color: var(--color-text);
+}

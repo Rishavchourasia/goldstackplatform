@@ -1,0 +1,7 @@
+**/target/
+gold-back/
+.idea/
+**/*.iml
+.env
+.env.*
+*.log

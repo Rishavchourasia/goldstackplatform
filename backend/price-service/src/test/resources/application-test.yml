@@ -1,0 +1,16 @@
+spring:
+  datasource:
+    password: unused-testcontainers-provides-it
+  kafka:
+    admin:
+      auto-create: false     # no broker in tests: don't wait ~40 s trying to create topics
+    listener:
+      auto-startup: false
+goldstack:
+  jwt:
+    secret: dGVzdC1zZWNyZXQtdGVzdC1zZWNyZXQtdGVzdC1zZWNyZXQ=
+  outbox:
+    enabled: false
+  price:
+    tick-ms: 3600000
+    seed-years: 1

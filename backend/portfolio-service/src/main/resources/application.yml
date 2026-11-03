@@ -1,0 +1,77 @@
+spring:
+  application:
+    name: portfolio-service
+  config:
+    import:
+      - optional:file:../../.env[.properties]
+      - optional:file:../.env[.properties]
+  datasource:
+    url: jdbc:postgresql://${DB_HOST:localhost}:${DB_PORT:5433}/${DB_NAME:portfolio_db}
+    username: ${DB_USER:goldstack}
+    password: ${DB_PASSWORD}
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    open-in-view: false
+    properties:
+      hibernate:
+        jdbc:
+          time_zone: UTC
+  kafka:
+    bootstrap-servers: ${KAFKA_BOOTSTRAP:localhost:9094}
+    consumer:
+      group-id: portfolio-service          # one consumer GROUP per service: each event is handled once per service
+      auto-offset-reset: earliest
+  jackson:
+    serialization:
+      write-dates-as-timestamps: false
+  data:
+    redis:
+      host: ${REDIS_HOST:localhost}
+      port: ${REDIS_PORT:6380}
+      password: ${REDIS_PASSWORD:}
+      timeout: 2s
+  cloud:
+    openfeign:
+      client:
+        config:
+          default:
+            connect-timeout: 2000
+            read-timeout: 5000
+
+server:
+  port: ${PORT:8086}
+  shutdown: graceful
+  forward-headers-strategy: framework
+  error:
+    include-stacktrace: never
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
+  endpoint:
+    health:
+      probes:
+        enabled: true
+
+springdoc:
+  swagger-ui:
+    path: /swagger-ui.html
+
+goldstack:
+  zone: Asia/Kolkata
+  outbox:
+    enabled: false              # this service publishes no outbox events (so it has no outbox table)
+  jwt:
+    secret: ${JWT_SECRET}
+    expiry-minutes: 1440
+  security:
+    public-paths: []
+    public-get-paths: ["/api/what-if/**"]
+  what-if:
+    cache-ttl-minutes: 60
+  clients:
+    price-url: ${PRICE_SERVICE_URL:http://localhost:8083}
+    wallet-url: ${WALLET_SERVICE_URL:http://localhost:8082}

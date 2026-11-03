@@ -1,0 +1,11 @@
+spring:
+  datasource:
+    password: unused-testcontainers-provides-it
+goldstack:
+  jwt:
+    secret: dGVzdC1zZWNyZXQtdGVzdC1zZWNyZXQtdGVzdC1zZWNyZXQ=
+  price:
+    tick-ms: 3600000      # effectively disable the live ticker during tests
+    seed-years: 1         # less history = faster test startup
+  sip:
+    cron: "-"             # "-" disables the scheduled SIP job; tests call SipRunner directly

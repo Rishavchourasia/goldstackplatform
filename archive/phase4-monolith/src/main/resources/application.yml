@@ -1,0 +1,88 @@
+spring:
+  application:
+    name: goldstack
+  config:
+    import:
+      - optional:file:../.env[.properties]
+      - optional:file:.env[.properties]
+
+  datasource:
+    url: jdbc:postgresql://${DB_HOST:localhost}:${DB_PORT:5433}/${DB_NAME:goldstack}
+    username: ${DB_USER:goldstack}
+    password: ${DB_PASSWORD}
+
+  data:
+    redis:
+      host: ${REDIS_HOST:localhost}
+      port: ${REDIS_PORT:6380}
+      password: ${REDIS_PASSWORD:}
+      timeout: 2s                 # fail fast instead of hanging a request when Redis is down
+
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    open-in-view: false   # don't keep DB connections open while rendering responses
+    properties:
+      hibernate:
+        jdbc:
+          time_zone: UTC
+
+  flyway:
+    enabled: true
+
+  jackson:
+    serialization:
+      write-dates-as-timestamps: false
+
+server:
+  port: ${PORT:8080}
+  shutdown: graceful
+  forward-headers-strategy: framework
+  error:
+    include-stacktrace: never
+
+springdoc:
+  swagger-ui:
+    path: /swagger-ui.html
+    operations-sorter: method
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
+  endpoint:
+    health:
+      probes:
+        enabled: true
+
+goldstack:
+  zone: Asia/Kolkata              # "today" is decided in India time (SIP dates, daily close)
+  cors-origins: http://localhost:5173   # the Vite dev server (Phase 2)
+  jwt:
+    secret: ${JWT_SECRET}
+    expiry-minutes: 1440          # 24 hours
+  wallet:
+    signup-bonus: 10000.00
+    max-topup: 100000.00
+  quote:
+    validity-seconds: 300         # 5 minutes
+  price:
+    provider: simulator           # "simulator" or "api"
+    tick-ms: 5000                 # how often the live price updates
+    seed-years: 7                 # years of daily history to generate on first start
+    seed-end-price: 12500.00      # roughly today's 24K price per gram in INR
+    api:                          # only used when provider=api
+      url: https://www.goldapi.io/api/XAU/INR
+      key: ${GOLD_API_KEY:}
+  sip:
+    cron: "0 0 9 * * *"           # every day at 09:00 (in the zone below)
+  rate-limit:
+    requests-per-minute: 120      # per logged-in user (key ratelimit:{userId})
+    anonymous-per-minute: 60      # per IP for public endpoints (key ratelimit:ip:{address})
+  what-if:
+    cache-ttl-minutes: 60         # whatif:* results are reused for 1 hour
+  idempotency:
+    result-ttl-hours: 24          # idem:* completed results are kept 24 hours
+  dev-endpoints:
+    enabled: true                 # exposes POST /api/dev/sips/run for testing

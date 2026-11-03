@@ -1,0 +1,82 @@
+spring:
+  application:
+    name: price-service
+  config:
+    import:
+      - optional:file:../../.env[.properties]
+      - optional:file:../.env[.properties]
+  datasource:
+    url: jdbc:postgresql://${DB_HOST:localhost}:${DB_PORT:5433}/${DB_NAME:price_db}
+    username: ${DB_USER:goldstack}
+    password: ${DB_PASSWORD}
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    open-in-view: false
+    properties:
+      hibernate:
+        jdbc:
+          time_zone: UTC
+  kafka:
+    bootstrap-servers: ${KAFKA_BOOTSTRAP:localhost:9094}
+    consumer:
+      group-id: price-service          # one consumer GROUP per service: each event is handled once per service
+      auto-offset-reset: earliest
+  jackson:
+    serialization:
+      write-dates-as-timestamps: false
+  data:
+    redis:
+      host: ${REDIS_HOST:localhost}
+      port: ${REDIS_PORT:6380}
+      password: ${REDIS_PASSWORD:}
+      timeout: 2s
+
+server:
+  port: ${PORT:8083}
+  shutdown: graceful
+  forward-headers-strategy: framework
+  error:
+    include-stacktrace: never
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
+  endpoint:
+    health:
+      probes:
+        enabled: true
+
+springdoc:
+  swagger-ui:
+    path: /swagger-ui.html
+
+goldstack:
+  zone: Asia/Kolkata
+  outbox:
+    enabled: false              # this service publishes no outbox events (so it has no outbox table)
+  jwt:
+    secret: ${JWT_SECRET}
+    expiry-minutes: 1440
+  security:
+    public-paths: []
+    public-get-paths: ["/api/prices/**"]
+  price:
+    provider: ${PRICE_PROVIDER:simulator}   # "simulator" or "api"
+    tick-ms: 5000
+    seed-years: 7
+    seed-end-price: 12500.00
+    api:
+      url: https://www.goldapi.io/api/XAU/INR
+      key: ${GOLD_API_KEY:}
+
+resilience4j:
+  circuitbreaker:
+    instances:
+      goldApi:
+        sliding-window-size: 10                 # judge the last 10 calls
+        failure-rate-threshold: 50              # 50%+ failures -> OPEN
+        wait-duration-in-open-state: 60s        # stay OPEN (no calls) for 60 s
+        permitted-number-of-calls-in-half-open-state: 2

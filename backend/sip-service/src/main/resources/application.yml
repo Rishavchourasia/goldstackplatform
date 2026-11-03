@@ -1,0 +1,61 @@
+spring:
+  application:
+    name: sip-service
+  config:
+    import:
+      - optional:file:../../.env[.properties]
+      - optional:file:../.env[.properties]
+  datasource:
+    url: jdbc:postgresql://${DB_HOST:localhost}:${DB_PORT:5433}/${DB_NAME:sip_db}
+    username: ${DB_USER:goldstack}
+    password: ${DB_PASSWORD}
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    open-in-view: false
+    properties:
+      hibernate:
+        jdbc:
+          time_zone: UTC
+  kafka:
+    bootstrap-servers: ${KAFKA_BOOTSTRAP:localhost:9094}
+    consumer:
+      group-id: sip-service          # one consumer GROUP per service: each event is handled once per service
+      auto-offset-reset: earliest
+  jackson:
+    serialization:
+      write-dates-as-timestamps: false
+
+server:
+  port: ${PORT:8085}
+  shutdown: graceful
+  forward-headers-strategy: framework
+  error:
+    include-stacktrace: never
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
+  endpoint:
+    health:
+      probes:
+        enabled: true
+
+springdoc:
+  swagger-ui:
+    path: /swagger-ui.html
+
+goldstack:
+  zone: Asia/Kolkata
+  jwt:
+    secret: ${JWT_SECRET}
+    expiry-minutes: 1440
+  security:
+    public-paths: []
+    public-get-paths: []
+  sip:
+    cron: "0 0 9 * * *"           # every day at 09:00 (Asia/Kolkata)
+  dev-endpoints:
+    enabled: ${DEV_ENDPOINTS_ENABLED:true}

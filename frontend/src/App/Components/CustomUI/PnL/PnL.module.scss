@@ -1,0 +1,18 @@
+.pnl {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+.up {
+  color: var(--color-success);
+}
+.down {
+  color: var(--color-danger);
+}
+.flat {
+  color: var(--color-text-secondary);
+}
+.percent {
+  font-size: 0.8em;
+  opacity: 0.85;
+}

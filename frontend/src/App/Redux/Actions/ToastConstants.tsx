@@ -1,0 +1,2 @@
+export const TOAST_SHOWN = 'TOAST_SHOWN';
+export const TOAST_DISMISSED = 'TOAST_DISMISSED';

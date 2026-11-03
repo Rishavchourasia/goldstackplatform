@@ -1,0 +1,75 @@
+spring:
+  application:
+    name: api-gateway
+  config:
+    import:
+      - optional:file:../../.env[.properties]
+      - optional:file:../.env[.properties]
+  data:
+    redis:                       # for rate limiting (ratelimit:* keys)
+      host: ${REDIS_HOST:localhost}
+      port: ${REDIS_PORT:6380}
+      password: ${REDIS_PASSWORD:}
+      timeout: 2s
+  kafka:
+    bootstrap-servers: ${KAFKA_BOOTSTRAP:localhost:9094}   # for gold.price.updated -> WebSocket
+  cloud:
+    gateway:
+      server:
+        webflux:
+          routes:
+            - id: user-service
+              uri: ${USER_SERVICE_URL:http://localhost:8081}
+              predicates:
+                - Path=/api/auth/**,/api/users/**
+            - id: wallet-service
+              uri: ${WALLET_SERVICE_URL:http://localhost:8082}
+              predicates:
+                - Path=/api/wallet/**,/api/dev/ledger/coins
+            - id: price-service
+              uri: ${PRICE_SERVICE_URL:http://localhost:8083}
+              predicates:
+                - Path=/api/prices/**
+            - id: order-service
+              uri: ${ORDER_SERVICE_URL:http://localhost:8084}
+              predicates:
+                - Path=/api/orders/**,/api/gold/**,/api/dev/ledger/gold,/api/dev/saga/**
+            - id: sip-service
+              uri: ${SIP_SERVICE_URL:http://localhost:8085}
+              predicates:
+                - Path=/api/sips/**,/api/dev/sips/**
+            - id: portfolio-service
+              uri: ${PORTFOLIO_SERVICE_URL:http://localhost:8086}
+              predicates:
+                - Path=/api/portfolio/**,/api/what-if/**
+            - id: notification-service
+              uri: ${NOTIFICATION_SERVICE_URL:http://localhost:8087}
+              predicates:
+                - Path=/api/notifications/**
+          httpclient:
+            connect-timeout: 2000      # ms
+            response-timeout: 15s      # a buy can wait up to 5 s for its saga
+
+server:
+  port: ${PORT:8080}
+  shutdown: graceful
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,gateway   # /actuator/gateway/routes lists every route
+  endpoint:
+    health:
+      probes:
+        enabled: true
+    gateway:
+      access: read-only
+
+goldstack:
+  zone: Asia/Kolkata
+  jwt:
+    secret: ${JWT_SECRET}
+  rate-limit:
+    requests-per-minute: 120
+    anonymous-per-minute: 60

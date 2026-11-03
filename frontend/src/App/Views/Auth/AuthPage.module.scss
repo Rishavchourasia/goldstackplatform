@@ -1,0 +1,27 @@
+.page {
+  position: relative;
+  display: grid;
+  place-items: center;
+  min-height: 100vh;
+  padding: var(--space-4);
+  overflow: hidden;
+}
+
+.glow {
+  position: absolute;
+  width: 560px;
+  height: 560px;
+  border-radius: 50%;
+  background: radial-gradient(circle, var(--color-accent-soft) 0%, transparent 70%);
+  animation: fade-in 1s var(--ease-out);
+}
+.card {
+  position: relative;
+  width: 100%;
+  max-width: 420px;
+  box-shadow: var(--shadow-lg);
+}
+.logo {
+  animation: pop-in var(--duration-slow) var(--ease-spring) both;
+  animation-delay: 120ms;
+}

@@ -1,0 +1,66 @@
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 10px;
+  border-radius: var(--radius-full);
+  background: var(--color-surface-muted);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-semibold);
+}
+.dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--color-text-muted);
+}
+.live .dot {
+  background: var(--color-success);
+  animation: pulse 2s ease-in-out infinite;
+}
+
+.flash-up {
+  animation: flash-up 900ms var(--ease-out);
+}
+.flash-down {
+  animation: flash-down 900ms var(--ease-out);
+}
+@keyframes flash-up {
+  from {
+    color: var(--color-success);
+  }
+}
+@keyframes flash-down {
+  from {
+    color: var(--color-danger);
+  }
+}
+.arrow-up {
+  color: var(--color-success);
+  animation: rise-in var(--duration-base) var(--ease-out);
+}
+.arrow-down {
+  color: var(--color-danger);
+  animation: rise-in var(--duration-base) var(--ease-out);
+}
+
+.hero {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  align-items: center;
+  gap: var(--space-6);
+}
+.heroPrice {
+  display: flex;
+  align-items: baseline;
+  gap: var(--space-2);
+  margin: 2px 0;
+}
+.spark {
+  min-width: 0;
+}
+@media (max-width: 720px) {
+  .hero {
+    grid-template-columns: 1fr;
+  }
+}

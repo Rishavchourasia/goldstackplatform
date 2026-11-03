@@ -1,0 +1,13 @@
+export const apiBaseUrl = '/api';
+export const authApiBaseUrl = `${apiBaseUrl}/auth`;
+export const usersApiBaseUrl = `${apiBaseUrl}/users`;
+export const walletApiUrl = `${apiBaseUrl}/wallet`;
+export const pricesApiUrl = `${apiBaseUrl}/prices`;
+export const ordersApiUrl = `${apiBaseUrl}/orders`;
+export const goldApiUrl = `${apiBaseUrl}/gold`;
+export const portfolioApiUrl = `${apiBaseUrl}/portfolio`;
+export const whatIfApiUrl = `${apiBaseUrl}/what-if`;
+export const sipsApiUrl = `${apiBaseUrl}/sips`;
+export const notificationsApiUrl = `${apiBaseUrl}/notifications`;
+export const devApiUrl = `${apiBaseUrl}/dev`;
+export const livePriceSocketPath = '/ws/price';

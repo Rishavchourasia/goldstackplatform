@@ -1,0 +1,12 @@
+.stat {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.value {
+  font-size: var(--font-size-xl);
+  animation: fade-in var(--duration-base) var(--ease-out);
+}
+.skeleton {
+  margin: 4px 0;
+}
