@@ -2,7 +2,7 @@ name: goldstack
 
 x-java-service: &java-service
   restart: unless-stopped
-  mem_limit: 420m            # 8 JVMs on a laptop: keep each one small
+  mem_limit: 420m
   depends_on: &deps
     postgres:
       condition: service_healthy
@@ -22,6 +22,7 @@ x-common-env: &common-env
   PRICE_SERVICE_URL: http://price-service:8080
   WALLET_SERVICE_URL: http://wallet-service:8080
   DEV_ENDPOINTS_ENABLED: ${DEV_ENDPOINTS_ENABLED:-true}
+  ZIPKIN_URL: http://zipkin:9411/api/v2/spans
 
 services:
   postgres:
@@ -34,7 +35,7 @@ services:
       - "${DB_PORT:-5433}:5432"
     volumes:
       - postgres-data:/var/lib/postgresql/data
-      - ./infra/postgres/init-databases.sql:/docker-entrypoint-initdb.d/init-databases.sql:ro   # one DB per service
+      - ./infra/postgres/init-databases.sql:/docker-entrypoint-initdb.d/init-databases.sql:ro
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U ${DB_USER:-goldstack} -d postgres"]
       interval: 5s
@@ -67,7 +68,7 @@ services:
       KAFKA_CONTROLLER_QUORUM_VOTERS: 1@kafka:9093
       KAFKA_CONTROLLER_LISTENER_NAMES: CONTROLLER
       KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
-      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1          # single broker: no copies possible
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
       KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 1
       KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1
       KAFKA_GROUP_INITIAL_REBALANCE_DELAY_MS: 0
@@ -152,6 +153,7 @@ services:
     build: { context: ./backend, args: { SERVICE: api-gateway } }
     image: goldstack-api-gateway:local
     environment:
+      ZIPKIN_URL: http://zipkin:9411/api/v2/spans
       JWT_SECRET: ${JWT_SECRET:?Set JWT_SECRET in .env}
       KAFKA_BOOTSTRAP: kafka:9092
       REDIS_HOST: redis
@@ -182,6 +184,37 @@ services:
     depends_on:
       api-gateway:
         condition: service_healthy
+    restart: unless-stopped
+
+  prometheus:
+    image: prom/prometheus:v3.5.0
+    volumes:
+      - ./infra/observability/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+      - ./infra/observability/alerts.yml:/etc/prometheus/alerts.yml:ro
+    ports:
+      - "9090:9090"
+    mem_limit: 256m
+    restart: unless-stopped
+
+  grafana:
+    image: grafana/grafana:12.1.0
+    environment:
+      GF_SECURITY_ADMIN_PASSWORD: ${GRAFANA_PASSWORD:-admin}
+    volumes:
+      - ./infra/observability/grafana/provisioning:/etc/grafana/provisioning:ro
+      - ./infra/observability/grafana/dashboards:/var/lib/grafana/dashboards:ro
+    ports:
+      - "3001:3000"
+    depends_on:
+      - prometheus
+    mem_limit: 256m
+    restart: unless-stopped
+
+  zipkin:
+    image: openzipkin/zipkin:3.5
+    ports:
+      - "9411:9411"
+    mem_limit: 256m
     restart: unless-stopped
 
 volumes:

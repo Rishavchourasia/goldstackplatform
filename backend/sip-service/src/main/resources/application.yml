@@ -20,7 +20,7 @@ spring:
   kafka:
     bootstrap-servers: ${KAFKA_BOOTSTRAP:localhost:9094}
     consumer:
-      group-id: sip-service          # one consumer GROUP per service: each event is handled once per service
+      group-id: sip-service
       auto-offset-reset: earliest
   jackson:
     serialization:
@@ -34,10 +34,19 @@ server:
     include-stacktrace: never
 
 management:
+  tracing:
+    sampling:
+      probability: 1.0
+  zipkin:
+    tracing:
+      endpoint: ${ZIPKIN_URL:http://localhost:9411/api/v2/spans}
+  metrics:
+    tags:
+      application: ${spring.application.name}
   endpoints:
     web:
       exposure:
-        include: health,info
+        include: health,info,prometheus
   endpoint:
     health:
       probes:

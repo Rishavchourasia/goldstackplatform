@@ -20,7 +20,7 @@ spring:
   kafka:
     bootstrap-servers: ${KAFKA_BOOTSTRAP:localhost:9094}
     consumer:
-      group-id: price-service          # one consumer GROUP per service: each event is handled once per service
+      group-id: price-service
       auto-offset-reset: earliest
   jackson:
     serialization:
@@ -40,10 +40,19 @@ server:
     include-stacktrace: never
 
 management:
+  tracing:
+    sampling:
+      probability: 1.0
+  zipkin:
+    tracing:
+      endpoint: ${ZIPKIN_URL:http://localhost:9411/api/v2/spans}
+  metrics:
+    tags:
+      application: ${spring.application.name}
   endpoints:
     web:
       exposure:
-        include: health,info
+        include: health,info,prometheus
   endpoint:
     health:
       probes:
@@ -56,7 +65,7 @@ springdoc:
 goldstack:
   zone: Asia/Kolkata
   outbox:
-    enabled: false              # this service publishes no outbox events (so it has no outbox table)
+    enabled: false
   jwt:
     secret: ${JWT_SECRET}
     expiry-minutes: 1440
@@ -76,7 +85,7 @@ resilience4j:
   circuitbreaker:
     instances:
       goldApi:
-        sliding-window-size: 10                 # judge the last 10 calls
-        failure-rate-threshold: 50              # 50%+ failures -> OPEN
-        wait-duration-in-open-state: 60s        # stay OPEN (no calls) for 60 s
+        sliding-window-size: 10
+        failure-rate-threshold: 50
+        wait-duration-in-open-state: 60s
         permitted-number-of-calls-in-half-open-state: 2

@@ -79,7 +79,7 @@ public class CommonWebAutoConfiguration {
                 .csrf(AbstractHttpConfigurer::disable)
                 .sessionManagement(s -> s.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> {
-                    auth.requestMatchers("/actuator/health/**", "/actuator/info", "/error",
+                    auth.requestMatchers("/actuator/health/**", "/actuator/info", "/actuator/prometheus", "/error",
                             "/swagger-ui.html", "/swagger-ui/**", "/v3/api-docs/**", "/internal/**").permitAll();
                     if (!publicAny.isEmpty()) {
                         auth.requestMatchers(publicAny.toArray(String[]::new)).permitAll();

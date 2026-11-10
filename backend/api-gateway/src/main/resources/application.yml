@@ -6,13 +6,13 @@ spring:
       - optional:file:../../.env[.properties]
       - optional:file:../.env[.properties]
   data:
-    redis:                       # for rate limiting (ratelimit:* keys)
+    redis:
       host: ${REDIS_HOST:localhost}
       port: ${REDIS_PORT:6380}
       password: ${REDIS_PASSWORD:}
       timeout: 2s
   kafka:
-    bootstrap-servers: ${KAFKA_BOOTSTRAP:localhost:9094}   # for gold.price.updated -> WebSocket
+    bootstrap-servers: ${KAFKA_BOOTSTRAP:localhost:9094}
   cloud:
     gateway:
       server:
@@ -47,18 +47,27 @@ spring:
               predicates:
                 - Path=/api/notifications/**
           httpclient:
-            connect-timeout: 2000      # ms
-            response-timeout: 15s      # a buy can wait up to 5 s for its saga
+            connect-timeout: 2000
+            response-timeout: 15s
 
 server:
   port: ${PORT:8080}
   shutdown: graceful
 
 management:
+  tracing:
+    sampling:
+      probability: 1.0
+  zipkin:
+    tracing:
+      endpoint: ${ZIPKIN_URL:http://localhost:9411/api/v2/spans}
+  metrics:
+    tags:
+      application: ${spring.application.name}
   endpoints:
     web:
       exposure:
-        include: health,info,gateway   # /actuator/gateway/routes lists every route
+        include: health,info,gateway,prometheus
   endpoint:
     health:
       probes:

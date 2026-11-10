@@ -20,7 +20,7 @@ spring:
   kafka:
     bootstrap-servers: ${KAFKA_BOOTSTRAP:localhost:9094}
     consumer:
-      group-id: order-service          # one consumer GROUP per service: each event is handled once per service
+      group-id: order-service
       auto-offset-reset: earliest
   jackson:
     serialization:
@@ -35,7 +35,7 @@ spring:
     openfeign:
       client:
         config:
-          default:            # every Feign client: fail fast instead of hanging a user request
+          default:
             connect-timeout: 2000
             read-timeout: 3000
 
@@ -47,10 +47,19 @@ server:
     include-stacktrace: never
 
 management:
+  tracing:
+    sampling:
+      probability: 1.0
+  zipkin:
+    tracing:
+      endpoint: ${ZIPKIN_URL:http://localhost:9411/api/v2/spans}
+  metrics:
+    tags:
+      application: ${spring.application.name}
   endpoints:
     web:
       exposure:
-        include: health,info
+        include: health,info,prometheus
   endpoint:
     health:
       probes:
