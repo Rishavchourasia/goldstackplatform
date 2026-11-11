@@ -34,4 +34,3 @@ infra/k8s/**/secret*.yaml
 
 backend/gold-back/
 
-.claude/

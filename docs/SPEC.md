@@ -112,7 +112,7 @@ Users hold **VIRTUAL** coins (not real money; 1 coin = ₹1) and use them to buy
 =====================================================
 
 ### PHASE 0 — Setup
-- Monorepo: `/backend`, `/frontend`, `/infra`, `/docs`. `.gitignore`, root README skeleton, `/docs/SPEC.md`, `CLAUDE.md`.
+- Monorepo: `/backend`, `/frontend`, `/infra`, `/docs`. `.gitignore`, root README skeleton, `/docs/SPEC.md`.
 - Check installed tools (java, mvn, node, docker) and report anything missing.
 
 ### PHASE 1 — Single Spring Boot app (learn the logic first)
