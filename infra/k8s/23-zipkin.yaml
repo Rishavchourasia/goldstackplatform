@@ -1,0 +1,35 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: zipkin
+  namespace: goldstack
+spec:
+  replicas: 1
+  selector:
+    matchLabels: {app: zipkin}
+  template:
+    metadata:
+      labels: {app: zipkin}
+    spec:
+      enableServiceLinks: false
+      containers:
+        - name: zipkin
+          image: openzipkin/zipkin:3.5
+          ports:
+            - containerPort: 9411
+          readinessProbe:
+            httpGet: {path: /health, port: 9411}
+          resources:
+            requests: {memory: 128Mi, cpu: 25m}
+            limits: {memory: 320Mi}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: zipkin
+  namespace: goldstack
+spec:
+  selector: {app: zipkin}
+  ports:
+    - port: 9411
+      targetPort: 9411

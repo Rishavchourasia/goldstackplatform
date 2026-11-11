@@ -1,0 +1,22 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: goldstack-config
+  namespace: goldstack
+data:
+  DB_HOST: postgres
+  DB_PORT: "5432"
+  DB_USER: goldstack
+  KAFKA_BOOTSTRAP: kafka:9092
+  REDIS_HOST: redis
+  REDIS_PORT: "6379"
+  ZIPKIN_URL: http://zipkin:9411/api/v2/spans
+  DEV_ENDPOINTS_ENABLED: "true"
+  PRICE_PROVIDER: simulator
+  PRICE_SERVICE_URL: http://price-service:8080
+  WALLET_SERVICE_URL: http://wallet-service:8080
+  USER_SERVICE_URL: http://user-service:8080
+  ORDER_SERVICE_URL: http://order-service:8080
+  SIP_SERVICE_URL: http://sip-service:8080
+  PORTFOLIO_SERVICE_URL: http://portfolio-service:8080
+  NOTIFICATION_SERVICE_URL: http://notification-service:8080

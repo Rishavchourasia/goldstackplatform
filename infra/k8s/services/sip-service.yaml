@@ -1,0 +1,52 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: sip-service
+  namespace: goldstack
+spec:
+  replicas: 1
+  selector:
+    matchLabels: {app: sip-service}
+  template:
+    metadata:
+      labels: {app: sip-service}
+    spec:
+      enableServiceLinks: false
+      containers:
+        - name: sip-service
+          image: goldstack-sip-service:local
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 8080
+          env:
+            - {name: DB_NAME, value: sip_db}
+            - {name: JAVA_TOOL_OPTIONS, value: "-Xmx320m -XX:TieredStopAtLevel=1 -XX:+UseSerialGC"}
+          envFrom:
+            - configMapRef: {name: goldstack-config}
+            - secretRef: {name: goldstack-secrets}
+          startupProbe:
+            httpGet: {path: /actuator/health/readiness, port: 8080}
+            periodSeconds: 10
+            failureThreshold: 30
+          readinessProbe:
+            httpGet: {path: /actuator/health/readiness, port: 8080}
+            initialDelaySeconds: 20
+            periodSeconds: 10
+          livenessProbe:
+            httpGet: {path: /actuator/health/liveness, port: 8080}
+            initialDelaySeconds: 60
+            periodSeconds: 20
+          resources:
+            requests: {memory: 256Mi, cpu: 100m}
+            limits: {memory: 512Mi}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: sip-service
+  namespace: goldstack
+spec:
+  selector: {app: sip-service}
+  ports:
+    - port: 8080
+      targetPort: 8080
