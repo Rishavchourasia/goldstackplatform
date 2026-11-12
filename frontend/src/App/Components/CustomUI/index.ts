@@ -8,6 +8,7 @@ export { InlineAlert } from './InlineAlert/InlineAlert';
 export { Modal } from './Modal/Modal';
 export { Pagination } from './Pagination/Pagination';
 export { PnL } from './PnL/PnL';
+export { RollingNumber } from './RollingNumber/RollingNumber';
 export { SegmentedControl } from './SegmentedControl/SegmentedControl';
 export { Skeleton } from './Skeleton/Skeleton';
 export { Spinner } from './Spinner/Spinner';

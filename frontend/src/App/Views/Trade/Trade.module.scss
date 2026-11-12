@@ -1,3 +1,5 @@
+@use 'sass:math';
+
 .page {
   max-width: 600px;
   margin: 0 auto;
@@ -92,6 +94,7 @@
 }
 
 .success {
+  position: relative;
   display: grid;
   place-items: center;
   width: 64px;
@@ -100,4 +103,38 @@
   background: var(--color-success-soft);
   color: var(--color-success);
   animation: pop-in 420ms var(--ease-spring) both;
+
+  &::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: 50%;
+    border: 2px solid var(--color-success);
+    opacity: 0;
+    animation: success-ripple 1.2s var(--ease-out) 200ms 2;
+  }
+}
+
+@keyframes success-ripple {
+  from {
+    opacity: 0.6;
+    transform: scale(1);
+  }
+  to {
+    opacity: 0;
+    transform: scale(1.9);
+  }
+}
+
+.receipt {
+  animation: rise-in var(--duration-slow) var(--ease-out) both;
+
+  .summary > * {
+    animation: rise-in var(--duration-slow) var(--ease-out) both;
+  }
+  @for $i from 1 through 8 {
+    .summary > :nth-child(#{$i}) {
+      animation-delay: #{150 + math.ceil($i * 0.5) * 70}ms;
+    }
+  }
 }

@@ -111,6 +111,18 @@ select {
   }
 }
 
+.stagger > * {
+  animation: rise-in var(--duration-slow) var(--ease-out) both;
+}
+@for $i from 1 through 10 {
+  .stagger > :nth-child(#{$i}) {
+    animation-delay: #{($i - 1) * 70}ms;
+  }
+}
+.stagger > :nth-child(n + 11) {
+  animation-delay: 700ms;
+}
+
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,

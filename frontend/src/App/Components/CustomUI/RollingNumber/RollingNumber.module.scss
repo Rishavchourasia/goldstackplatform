@@ -1,0 +1,31 @@
+.rolling {
+  display: inline-flex;
+  font-variant-numeric: tabular-nums;
+}
+
+.track {
+  display: inline-flex;
+  line-height: 1.15;
+}
+
+.symbol {
+  white-space: pre;
+}
+
+.digit {
+  display: inline-block;
+  height: 1.15em;
+  overflow: hidden;
+}
+
+.column {
+  display: flex;
+  flex-direction: column;
+
+  transition: transform 900ms var(--ease-out);
+  transition-delay: calc(var(--i, 0) * 35ms);
+
+  span {
+    height: 1.15em;
+  }
+}

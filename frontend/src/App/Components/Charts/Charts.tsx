@@ -1,4 +1,5 @@
 import { CartesianGrid, Legend, Line, LineChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts';
+import { usePrefersReducedMotion } from '../CustomHooks/usePrefersReducedMotion';
 import { Decimal } from '../../Models/GeneralResponse';
 import { LivePrice } from '../../Models/Price';
 import * as fmt from '../../Utils/format';
@@ -11,6 +12,7 @@ interface ComparisonPoint {
 }
 
 export function InvestedVsValueChart({ points, height = 300 }: { points: ComparisonPoint[]; height?: number }) {
+  const animate = !usePrefersReducedMotion();
   const data = points.map((p) => ({
     ...p,
     investedN: fmt.toChartNumber(p.invested),
@@ -56,7 +58,9 @@ export function InvestedVsValueChart({ points, height = 300 }: { points: Compari
             strokeWidth={2}
             dot={false}
             activeDot={{ r: 4, strokeWidth: 2, stroke: 'var(--color-surface)' }}
-            isAnimationActive={false}
+            isAnimationActive={animate}
+            animationDuration={1200}
+            animationEasing="ease-out"
           />
           <Line
             type="stepAfter"
@@ -66,7 +70,10 @@ export function InvestedVsValueChart({ points, height = 300 }: { points: Compari
             strokeWidth={2}
             dot={false}
             activeDot={{ r: 4, strokeWidth: 2, stroke: 'var(--color-surface)' }}
-            isAnimationActive={false}
+            isAnimationActive={animate}
+            animationBegin={250}
+            animationDuration={1200}
+            animationEasing="ease-out"
           />
         </LineChart>
       </ResponsiveContainer>

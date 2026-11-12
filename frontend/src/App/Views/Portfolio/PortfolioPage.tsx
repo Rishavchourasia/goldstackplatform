@@ -34,7 +34,7 @@ export function PortfolioPage() {
   useDispatchOnMount([{ type: PORTFOLIO_TRANSACTIONS_REQUEST, payload: { page } }], [page]);
 
   return (
-    <Stack gap={6}>
+    <Stack gap={6} className="stagger">
       <PageHeader title="Portfolio" subtitle="What you hold, what you paid, and how it's doing." />
       <SummaryTiles showCoins={false} />
 
